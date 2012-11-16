@@ -1,3 +1,4 @@
+
 <!doctype html>
 
 <head>
@@ -5,25 +6,13 @@
     <title>Chart JS</title>
     
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    
-    <link type="text/css" rel="stylesheet" media="all" href="chartjs/chartjs.css" />
 
-    <script type="text/javascript" src="chartjs/chartjs.js"></script>
+    <link type="text/css" rel="stylesheet" media="all" href="lib/bootstrap/css/bootstrap.min.css" />    
+    <link type="text/css" rel="stylesheet" media="all" href="chartjs/css/chartjs.css" />
+
+    <script type="text/javascript" src="chartjs/js/chartjs.js"></script>
 
     <script type="text/javascript">
-    $(document).ready(function(){
-
-        var table1 = new tablerone({
-            id : "table1-container",
-            // data : data,
-            url : 'tablerone/js/tablerone-demo.json',
-            filter : {enabled : true},
-            sort :   {enabled : true},
-            pages :  {enabled : true}
-        });
-
-        var debug = true;
-    });
     </script>
 
 </head>
@@ -32,8 +21,49 @@
 
     <div class="row-fluid">
         
-        <div class="span12 span12-padding">
-            <div id="chart-page-container"></div>
+        <div class="span3 span-padding chart-sidebar">
+            <span class="comment">Оценен</span>
+            <ul>
+                <li><span class="active">Профессиональный рост</span><div class="arrow-right"></div></li>
+                <li><span>Соцпакет<span></li>
+                <li><span>Команда<span></li>
+                <li><span>Планы на полгода<span></li>
+                <li><span>Уровень зарплаты<span></li>
+                <li><span>Компания как бренд<span></li>
+                <li><span>Идеальный роботодатель<span></li>
+                <li><span>Рабочее место<span></li>
+            </ul>
+        </div>
+        <div class="span9">
+
+            <div id="chart-page-container" class="chart-container">
+
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="722"
+  height="400">
+
+  <g class="highcharts-grid" zIndex="1">
+      <path fill="none" d="M 72 329.5 L 592 329.5" stroke="#C0C0C0"
+        stroke-width="1" zIndex="1" />
+      <path fill="none" d="M 72 238.5 L 592 238.5" stroke="#C0C0C0"
+        stroke-width="1" zIndex="1" />
+      <path fill="none" d="M 72 146.5 L 592 146.5" stroke="#C0C0C0"
+        stroke-width="1" zIndex="1" />
+      <path fill="none" d="M 72 55.5 L 592 55.5" stroke="#C0C0C0"
+        stroke-width="1" zIndex="1" />
+      <path fill="none" d="M 72 284.5 L 592 284.5" stroke="#C0C0C0"
+        stroke-width="1" zIndex="1" />
+      <path fill="none" stroke="#C0C0C0" stroke-width="1" zIndex="1"
+        d="M 72 192.5 L 592 192.5" />
+      <path fill="none" stroke="#C0C0C0" stroke-width="1" zIndex="1"
+        d="M 72 101.5 L 592 101.5" />
+      <path fill="none" d="M 72 375.5 L 592 375.5" stroke="#C0C0C0"
+        stroke-width="1" zIndex="1" />
+  </g>
+</svg>
+
+            </div>
+
+
         </div>
         
     </div>

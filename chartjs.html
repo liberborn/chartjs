@@ -1,0 +1,43 @@
+<!doctype html>
+
+<head>
+
+    <title>Chart JS</title>
+    
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    
+    <link type="text/css" rel="stylesheet" media="all" href="chartjs/chartjs.css" />
+
+    <script type="text/javascript" src="chartjs/chartjs.js"></script>
+
+    <script type="text/javascript">
+    $(document).ready(function(){
+
+        var table1 = new tablerone({
+            id : "table1-container",
+            // data : data,
+            url : 'tablerone/js/tablerone-demo.json',
+            filter : {enabled : true},
+            sort :   {enabled : true},
+            pages :  {enabled : true}
+        });
+
+        var debug = true;
+    });
+    </script>
+
+</head>
+
+<body>
+
+    <div class="row-fluid">
+        
+        <div class="span12 span12-padding">
+            <div id="chart-page-container"></div>
+        </div>
+        
+    </div>
+
+</body>
+
+</html>

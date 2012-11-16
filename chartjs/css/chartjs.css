@@ -1,0 +1,64 @@
+.span-padding, .span12-padding {
+    padding: 20px;
+}
+
+.chart-sidebar {
+  font-size: 13px;
+}
+
+.chart-sidebar .comment {
+  color: #999;
+  font-style: italic;
+  padding: 0 0 0 15px;
+}
+
+.chart-sidebar ul {
+  margin: -10px 0 0 0;
+  padding: 0;  
+  min-width: 180px;
+}
+
+.chart-sidebar ul li {
+  color: #2D8DBB;
+  clear: both;
+  cursor: pointer;
+  list-style-type: none;
+  margin: 15px 0;
+  padding: 0 0 0 15px;
+}
+
+.chart-sidebar ul li span {
+  border-bottom: 1px dashed;
+  margin: 0;
+  padding: 5px 0 5px 0px;
+}
+
+.chart-sidebar ul li span.active {
+  float: left;
+  background: #FFF100;
+  border-bottom: none;
+  border-radius: 10px 0 0 10px;
+  color: #000;
+  margin: 5px 0 5px -15px;
+  padding: 2px 2px 2px 15px;
+  height: 20px;
+}
+
+.arrow-right {
+  float: left;
+  width: 0; 
+  height: 0; 
+  border-top: 13px dashed transparent;
+  border-bottom: 12px dashed transparent;
+  border-left: 14px solid #FFF100;
+  margin: 5px 0 0 0;
+  padding: 0;
+}
+
+.chart-container {
+  display: block;
+  border: 1px solid #ccc;
+  margin: 50px 0 0 0;
+  width: 700px;
+  height: 600px;
+}

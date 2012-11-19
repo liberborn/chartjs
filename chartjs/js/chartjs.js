@@ -11,63 +11,56 @@
         w : 0,
         h : 0,
 
-        minOffset : 20,
-        topOffset : 40,
-        offset : 20,
-        lineOffset : 25,
-        textOffset : 3,
-        textOffsetMax    : 8,
-        percentTick : 20,
+        margin : {
+            top : 20,
+            right : 15,
+            bottom : 10,
+            left : 10
+        },
+
+        padding : {
+            top : 38,
+            right : 20,
+            bottom : 10,
+            left : 10
+        },
+
+        offset : {
+            min : 10,
+            text : 3,
+            textMax : 9
+        },
+
+        color : {
+            base : '#C0C0C0'
+        },
 
         svg : '',
 
         init : function() {
             this.setConfig();
-            // this.setGradient();
+            this.setGradient();
             this.renderAxisX();
             this.renderAxisY();
             this.renderData();
             this.renderChart();
+            this.events();
         },
 
         setConfig : function() {
-            this.w = this.config.width - this.minOffset;
-            this.h = this.config.height - this.minOffset;
+            this.w = this.config.width;
+            this.h = this.config.height;
         },
 
         setGradient : function() {
 
-            function colorLuminance(hex, lum) 
-            {
-                // rgb = rgb.replace('rgb(','');
-                // rgb = rgb.replace(')','');
-
-                // var hex = (0x1000000 | rgb).toString(16).substring(1);
-
-                // validate hex string  
-                hex = String(hex).replace(/[^0-9a-f]/gi, '');  
-                if (hex.length < 6) {  
-                    hex = hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];  
-                }  
-                lum = lum || 0;  
-                // convert to decimal and change luminosity  
-                var rgb = "#", c, i;  
-                for (i = 0; i < 3; i++) {  
-                    c = parseInt(hex.substr(i*2,2), 16);  
-                    c = Math.round(Math.min(Math.max(0, c + (c * lum)), 255)).toString(16);  
-                    rgb += ("00"+c).substr(c.length);  
-                }  
-                return rgb;  
-            }
-
-            var c = this.config.data.color,
-                fromColor = colorLuminance('66D902', + 1),
-                toColor = colorLuminance('66D902', + 1),
+            var fromColor = '#FFF',
+                toColor = this.config.data.color,
                 defs = 
                    '<defs>' +
-                     '<linearGradient id="gradItemBox" x1="0%" y1="0%" x2="0%" y2=100%">' +
-                       '<stop offset="0%" style="stop-color:' + fromColor + '; stop-opacity:1" />' +
-                       '<stop offset="100%" style="stop-color:' + toColor + '; stop-opacity:1" />' +
+                     '<linearGradient id="gradItemBox" x1="0" y1="0" x2="0" y2="44" gradientUnits="userSpaceOnUse">' +
+                       '<stop offset="0" stop-color="' + fromColor + '" stop-opacity="0.12" />' +
+                       '<stop offset="1" stop-color="' + toColor + '" stop-opacity="0.14" />' +
                      '</linearGradient>' +
                    '</defs>';
 
@@ -75,10 +68,9 @@
         },
 
         renderChart : function() {
-            var svg = '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" ' + 
-                        'width="' + (this.w + this.minOffset) + '" height="' + (this.h + this.minOffset) + '">' +
-                        this.svg +
-                      '</svg>';
+            var w = this.w,
+                h = this.h,
+                svg = '<svg ' + 'width="' + w + '" height="' + h + '">' + this.svg + '</svg>';
 
             $(this.id).html(svg);
         },
@@ -102,78 +94,145 @@
             return l;
         },
 
-        renderAxisX : function() {
+        axisXLabel : function(x, y, label) {
+            return '<text x="' + (x - 6) + '" y="' + y + 
+                   '" class="grid-label" style="fill: #999999;">' + 
+                   label + '</text>';
+        },
 
+        axisXTickers : function() {
             var g = '',
                 points = this.config.axisX.points,
-                step = (this.w + this.lineOffset + this.minOffset) / points.length;
+                lineX = this.w - this.margin.left - this.padding.left -
+                        this.margin.right - this.padding.right,
+                lineY = this.h - this.margin.bottom - this.padding.bottom,
+                tickW = 3,
+                textH = lineY + 15,
+                step = lineX / (points.length - 1);
 
             for (var i = 0; i < points.length; i++) {
-                var x = (i === points.length - 1) ? (this.w - this.lineOffset) : ((step * i) + this.offset);
+
+                var x = ((step * i) + this.margin.left + this.padding.left);
 
                 g += this.line({
                         x1 : x,
-                        y1 : this.h + 3,
+                        y1 : lineY - tickW,
                         x2 : x,
-                        y2 : this.h - 3,
+                        y2 : lineY + tickW,
                         stroke : '#C0C0C0',
                         strokeW : '1'
                 });
 
-                g += '<text x="' + (x - 6) + '" y="' + (this.h + 15) + '" class="grid-label" style="fill: #999999;">' + points[i] + '</text>';
+                g += this.axisXLabel(x, textH, points[i]);
             }
+
+            return g;
+        },
+
+        renderAxisX : function() {
+            var g = '';
+
+            g += this.axisXTickers();
 
             this.renderGroup(g);
         },
 
-        renderAxisY : function() {
+        axisYLabel : function(obj) {
+            return '<text x="' + obj.x + '" y="' + 
+                    (obj.y + this.offset.text) + 
+                    '" class="grid-label" style="fill: ' + obj.color + '; stroke-width: 1;">' + 
+                    obj.label + '</text>';
+        },
+
+        axisYGrid : function(obj) {
 
             var g = '',
-                points = this.config.axisY.points,
-                step = Math.floor( (this.h - this.offset - this.topOffset) / (points.length - 1)),
-                percentStep = Math.floor( (this.h - this.offset - this.topOffset) / (100 / this.percentTick));
-                color = this.config.middleLineColor;
+                lineY = this.h - this.margin.top - this.padding.top -
+                        this.margin.bottom - this.padding.bottom,
+                step = lineY / (obj.points.length - 1);
 
-            // baseline
-            g += this.line({
-                    x1 : this.offset,
-                    y1 : this.h,
-                    x2 : this.w - this.lineOffset,
-                    y2 : this.h,
-                    stroke : '#C0C0C0',
-                    strokeW : '1'
-            });
+            for (var i = 1; i < obj.points.length; i++) {
 
-            // point lines
-            for (var i = 1; i < points.length; i++) {
-
-                var y = this.h - (step * i);
+                var y = (this.h - this.margin.bottom - this.padding.bottom) - (step * i);
 
                 g += this.line({
-                        x1 : this.offset,
+                        x1 : (this.margin.left + this.padding.left),
                         y1 : y,
-                        x2 : this.w - this.lineOffset,
+                        x2 : (this.w - this.margin.right - this.padding.right),
                         y2 : y,
-                        stroke : color,
+                        stroke : obj.color,
                         strokeW : '1',
                         strokeDA : '4,4'
                 });
 
-                g += '<text x="' + 0 + '" y="' + (y + this.textOffset) + '" class="grid-label" style="stroke: ' + color + '">' + points[i] + '</text>';
             }
 
-            // percent
-            var pX = this.w - this.offset;
+            return g;
+        },
 
-            for (var i = 0; i <= 100; i += this.percentTick) {
+        axisYPoints : function(obj) {
 
-                var y = this.h - (percentStep * (i / this.percentTick) );
-                    label = (i == 100) ? '100%' : i + '';
+            var g = '',
+                lineY = this.h - this.margin.top - this.padding.top -
+                        this.margin.bottom - this.padding.bottom,
+                step = lineY / (obj.points.length - 1);
 
-                g += '<text x="' +  pX + '" y="' + (y + this.textOffset) + '" class="grid-label" style="fill: #AAA;">' +  label + '</text>';
+            for (var i = 1; i < obj.points.length; i++) {
+
+                var y = (this.h - this.margin.bottom - this.padding.bottom) - (step * i),
+                    label = (typeof obj.points[i] === 'number') ? obj.points[i] : obj.points[i].lbl;
+
+                g += this.axisYLabel({
+                        x : obj.x,
+                        y : y,
+                        color : obj.color,
+                        label : label
+                });
             }
 
-            this.renderGroup(g);
+            return g;
+        },
+
+        renderAxisY : function() {
+
+            var color = this.config.middleLineColor,
+                lineX1 = this.margin.left + this.padding.left,
+                lineX2 = this.w - this.margin.right - this.padding.right,
+                baselineY = this.h - this.margin.bottom - this.padding.bottom;
+
+            // baseline
+            this.renderGroup(
+                 this.line({
+                    x1 : lineX1,
+                    y1 : baselineY,
+                    x2 : lineX2,
+                    y2 : baselineY,
+                    stroke : '#C0C0C0',
+                    strokeW : 1
+            }) );
+
+            // grid lines
+            this.renderGroup(
+                this.axisYGrid({
+                    color : color,
+                    points : this.config.axisY.points
+            }) );
+
+            // left points
+            this.renderGroup(
+                this.axisYPoints({
+                    x : this.margin.left,
+                    color : color,
+                    points : this.config.axisY.points
+            }) );
+
+            // right points (percents)
+            this.renderGroup(
+                this.axisYPoints({
+                    x : this.w - this.margin.right - this.padding.right,
+                    color : this.color.base,
+                    points : this.config.axisY.points2
+            }) );
         },
 
         renderItemBox : function(obj){
@@ -195,19 +254,29 @@
                         (x1 + boxW) + ' ' + (y1 + boxH - tipH) + ' ' + 
                         (x1 + halfW) + ' ' + (y1 + boxH) + ' ' + 
                         (x1) + ' ' + (y1 + boxH - tipH) +' z"' +
-                    'stroke="' + obj.color + '" stroke-width="2" transform="rotate(0 0 0)"' + 
+                    'stroke="' + obj.color + '" stroke-width="1" ' + 
                     'stroke-linecap="square" stroke-linejoin="round" fill="url(#gradItemBox)"></path>';
 
-            item += '<text x="' +  (x1 + (halfW / 2)) + '" y="' + (y1 + (halfW - tipH)) + '" class="grid-label" style="stroke: #666;">' +  obj.label + '</text>';
-            item += '<text x="' +  (x1 + (halfW / 2)) + '" y="' + (y1 + halfH + tipH) + '" class="grid-label" style="stroke: #AAA;">' +  obj.labelPercent + '</text>';
+            item += '<text x="' +  (x1 + (halfW / 2)) + '" y="' + (y1 + (halfW - tipH)) + 
+                    '" class="grid-label" style="stroke: #666;">' +  obj.label + '</text>';
+            item += '<text x="' +  (x1 + (halfW / 2)) + '" y="' + (y1 + halfH + tipH) + 
+                    '" class="grid-label" style="stroke: #AAA;">' +  obj.labelPercent + '</text>';
+
             return item;
         },
 
         renderData : function() {
 
             var g = '',
-                w = this.w - this.lineOffset - (this.textOffset * 2),
-                h = this.h - (this.minOffset / 2),
+
+                w = this.w - this.margin.left - this.padding.left -
+                    this.margin.right - this.padding.right,
+                wOffset = this.margin.left + this.padding.left,
+
+                h = this.h - this.margin.top - this.padding.top - 
+                    this.margin.bottom - this.padding.bottom,
+                hOffset = this.margin.top + this.padding.top,
+
                 min = this.config.axisX.min,
                 max = this.config.axisX.max,
                 maxY = (this.config.axisY.max - this.config.axisY.min),
@@ -219,28 +288,33 @@
             for (var i = 0, m = item.points.length; i < m; i++) {
 
                 var x = item.points[i].x,
-                    cx =  ((x - min) * w / (max - min)) + (this.lineOffset / 2), 
-                    cy =  h - (item.points[i].y * h / maxY) + (this.minOffset),
+
+                    cx =  ((x - min) * w / (max - min))     + wOffset, 
+                    cy =  h - (item.points[i].y * h / maxY) + hOffset,
+
                     label = item.points[i].percent + '(' + item.points[i].y + '), ' + x;
 
                 line.push({x : cx, y : cy});
 
-                g += '<circle cx="' + cx + '" cy="' + cy + '" r="5" stroke="' + item.color + '" stroke-width="2" fill="white"/>';
-                // g += '<text x="' +  (cx + 10) + '" y="' + (cy + this.textOffset) + '" class="grid-label" style="fill: #AAA;">' +  label + '</text>';
+                g += '<circle cx="' + cx + '" cy="' + cy + '" r="5" stroke="' + item.color + 
+                     '" stroke-width="2" fill="white"' +
+                     ' data-item="' + item.label + '" ' + '/>';
 
                 // line y
                 g += this.line({
                         x1 : cx,
-                        y1 : cy + this.minOffset,
+                        y1 : cy + this.offset.min,
                         x2 : cx,
-                        y2 : this.h,
+                        y2 : this.h - this.margin.bottom - this.padding.bottom,
                         stroke : '#C0C0C0',
                         strokeW : '1',
                         strokeDA : '4,4'
                 });
 
                 // text y
-                g += '<text x="' +  (cx - this.textOffsetMax) + '" y="' + (this.h - this.textOffsetMax) + '" class="grid-label" style="stroke: #AAA;">' +  x + '</text>';
+                g += '<text x="' +  (cx - this.offset.textMax) + 
+                     '" y="' + (this.h - this.margin.bottom - this.padding.bottom - this.offset.textMax) + 
+                     '" class="grid-label" style="stroke: #AAA;">' +  x + '</text>';
 
                 g += this.renderItemBox({
                         x : cx,
@@ -271,6 +345,51 @@
             mainLine(this);
 
             this.renderGroup(l + g);
+        },
+
+        showItemTip : function(e) {
+            
+            // if ( window.svgDocument == null ) var svgDocument = e.target.ownerDocument;
+
+            var offsetX = 15, offsetY = 5,
+
+                label = this.attributes[0].nodeValue,
+
+                x = parseInt(this.attributes[6].nodeValue) + offsetX,
+                y = parseInt(this.attributes[5].nodeValue) + offsetY,
+                data = document.createTextNode(label),
+                txt = document.createElementNS('http://www.w3.org/2000/svg','text');
+
+            this.attributes[2].nodeValue = "4"; // stroke-width
+            this.attributes[4].nodeValue = "6"; // r
+
+            txt.setAttribute('id','itemTip');
+            txt.setAttribute('x', x);
+            txt.setAttribute('y', y);
+            txt.setAttribute('class','grid-label item-tip');
+            txt.setAttribute('style','fill: #666666;');
+            txt.appendChild(data);
+
+            this.parentNode.appendChild(txt);
+
+        },
+
+        clearItemTips : function() {
+
+            var tip = this.parentNode.lastElementChild,
+                parent = this.parentNode;
+
+            parent.removeChild(tip);
+
+            this.attributes[2].nodeValue = "2"; // stroke-width
+            this.attributes[4].nodeValue = "5"; // r
+
+        },
+
+        events : function() {
+
+            $('circle').on('mouseover', this.showItemTip)
+                       .on('mouseleave', this.clearItemTips);
         }
     };
 

@@ -140,7 +140,7 @@
         axisYLabel : function(obj) {
             return '<text x="' + obj.x + '" y="' + 
                     (obj.y + this.offset.text) + 
-                    '" class="grid-label" style="fill: ' + obj.color + '; stroke-width: 1;">' + 
+                    '" class="grid-label" style="fill: ' + obj.color + '; ">' + 
                     obj.label + '</text>';
         },
 
@@ -258,9 +258,9 @@
                     'stroke-linecap="square" stroke-linejoin="round" fill="url(#gradItemBox)"></path>';
 
             item += '<text x="' +  (x1 + (halfW / 2)) + '" y="' + (y1 + (halfW - tipH)) + 
-                    '" class="grid-label" style="stroke: #666;">' +  obj.label + '</text>';
+                    '" class="grid-label" style="fill: #000;">' +  obj.label + '</text>';
             item += '<text x="' +  (x1 + (halfW / 2)) + '" y="' + (y1 + halfH + tipH) + 
-                    '" class="grid-label" style="stroke: #AAA;">' +  obj.labelPercent + '</text>';
+                    '" class="grid-label" style="fill: #999;">' +  obj.labelPercent + '</text>';
 
             return item;
         },
@@ -314,7 +314,7 @@
                 // text y
                 g += '<text x="' +  (cx - this.offset.textMax) + 
                      '" y="' + (this.h - this.margin.bottom - this.padding.bottom - this.offset.textMax) + 
-                     '" class="grid-label" style="stroke: #AAA;">' +  x + '</text>';
+                     '" class="grid-label" style="fill: #333;">' +  x + '</text>';
 
                 g += this.renderItemBox({
                         x : cx,

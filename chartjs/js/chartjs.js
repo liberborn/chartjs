@@ -349,8 +349,6 @@
 
         showItemTip : function(e) {
             
-            // if ( window.svgDocument == null ) var svgDocument = e.target.ownerDocument;
-
             var offsetX = 15, offsetY = 5,
 
                 label = this.attributes[0].nodeValue,
@@ -360,9 +358,11 @@
                 data = document.createTextNode(label),
                 txt = document.createElementNS('http://www.w3.org/2000/svg','text');
 
+            // circle hover effect
             this.attributes[2].nodeValue = "4"; // stroke-width
             this.attributes[4].nodeValue = "6"; // r
 
+            // item tip
             txt.setAttribute('id','itemTip');
             txt.setAttribute('x', x);
             txt.setAttribute('y', y);
@@ -379,8 +379,10 @@
             var tip = this.parentNode.lastElementChild,
                 parent = this.parentNode;
 
+            // remove item tip
             parent.removeChild(tip);
 
+            // remove circle hover effect
             this.attributes[2].nodeValue = "2"; // stroke-width
             this.attributes[4].nodeValue = "5"; // r
 
@@ -400,9 +402,5 @@
     };
 
     Chart.prototype = ChartJS;
-
-    var debug = true;
-
-
 
 

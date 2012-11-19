@@ -12,6 +12,7 @@
         h : 0,
 
         minOffset : 20,
+        topOffset : 40,
         offset : 20,
         lineOffset : 25,
         textOffset : 3,
@@ -22,6 +23,7 @@
 
         init : function() {
             this.setConfig();
+            // this.setGradient();
             this.renderAxisX();
             this.renderAxisY();
             this.renderData();
@@ -31,6 +33,45 @@
         setConfig : function() {
             this.w = this.config.width - this.minOffset;
             this.h = this.config.height - this.minOffset;
+        },
+
+        setGradient : function() {
+
+            function colorLuminance(hex, lum) 
+            {
+                // rgb = rgb.replace('rgb(','');
+                // rgb = rgb.replace(')','');
+
+                // var hex = (0x1000000 | rgb).toString(16).substring(1);
+
+                // validate hex string  
+                hex = String(hex).replace(/[^0-9a-f]/gi, '');  
+                if (hex.length < 6) {  
+                    hex = hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];  
+                }  
+                lum = lum || 0;  
+                // convert to decimal and change luminosity  
+                var rgb = "#", c, i;  
+                for (i = 0; i < 3; i++) {  
+                    c = parseInt(hex.substr(i*2,2), 16);  
+                    c = Math.round(Math.min(Math.max(0, c + (c * lum)), 255)).toString(16);  
+                    rgb += ("00"+c).substr(c.length);  
+                }  
+                return rgb;  
+            }
+
+            var c = this.config.data.color,
+                fromColor = colorLuminance('66D902', + 1),
+                toColor = colorLuminance('66D902', + 1),
+                defs = 
+                   '<defs>' +
+                     '<linearGradient id="gradItemBox" x1="0%" y1="0%" x2="0%" y2=100%">' +
+                       '<stop offset="0%" style="stop-color:' + fromColor + '; stop-opacity:1" />' +
+                       '<stop offset="100%" style="stop-color:' + toColor + '; stop-opacity:1" />' +
+                     '</linearGradient>' +
+                   '</defs>';
+
+            this.svg += defs;
         },
 
         renderChart : function() {
@@ -89,8 +130,8 @@
 
             var g = '',
                 points = this.config.axisY.points,
-                step = Math.floor( (this.h - this.offset) / (points.length - 1)),
-                percentStep = Math.floor( (this.h - this.offset) / (100 / this.percentTick));
+                step = Math.floor( (this.h - this.offset - this.topOffset) / (points.length - 1)),
+                percentStep = Math.floor( (this.h - this.offset - this.topOffset) / (100 / this.percentTick));
                 color = this.config.middleLineColor;
 
             // baseline
@@ -135,6 +176,33 @@
             this.renderGroup(g);
         },
 
+        renderItemBox : function(obj){
+
+            var item = '',
+                boxW = 50,
+                boxH = 45,
+                tipH = 10,
+                halfW = boxW / 2,
+                halfH = boxH / 2,
+                offset = 12,
+
+                x1 = obj.x - halfW,
+                y1 = obj.y - boxH - offset;
+
+            item += '<path d="M' + 
+                        x1 + ' ' + y1 + ' ' + 
+                        (x1 + boxW) + ' ' + (y1) + ' ' + 
+                        (x1 + boxW) + ' ' + (y1 + boxH - tipH) + ' ' + 
+                        (x1 + halfW) + ' ' + (y1 + boxH) + ' ' + 
+                        (x1) + ' ' + (y1 + boxH - tipH) +' z"' +
+                    'stroke="' + obj.color + '" stroke-width="2" transform="rotate(0 0 0)"' + 
+                    'stroke-linecap="square" stroke-linejoin="round" fill="url(#gradItemBox)"></path>';
+
+            item += '<text x="' +  (x1 + (halfW / 2)) + '" y="' + (y1 + (halfW - tipH)) + '" class="grid-label" style="stroke: #666;">' +  obj.label + '</text>';
+            item += '<text x="' +  (x1 + (halfW / 2)) + '" y="' + (y1 + halfH + tipH) + '" class="grid-label" style="stroke: #AAA;">' +  obj.labelPercent + '</text>';
+            return item;
+        },
+
         renderData : function() {
 
             var g = '',
@@ -158,7 +226,7 @@
                 line.push({x : cx, y : cy});
 
                 g += '<circle cx="' + cx + '" cy="' + cy + '" r="5" stroke="' + item.color + '" stroke-width="2" fill="white"/>';
-                g += '<text x="' +  (cx + 10) + '" y="' + (cy + this.textOffset) + '" class="grid-label" style="fill: #AAA;">' +  label + '</text>';
+                // g += '<text x="' +  (cx + 10) + '" y="' + (cy + this.textOffset) + '" class="grid-label" style="fill: #AAA;">' +  label + '</text>';
 
                 // line y
                 g += this.line({
@@ -173,6 +241,14 @@
 
                 // text y
                 g += '<text x="' +  (cx - this.textOffsetMax) + '" y="' + (this.h - this.textOffsetMax) + '" class="grid-label" style="stroke: #AAA;">' +  x + '</text>';
+
+                g += this.renderItemBox({
+                        x : cx,
+                        y : cy,
+                        color : item.color,
+                        label : item.points[i].y,
+                        labelPercent : item.points[i].percent + '%'
+                });
             }
 
             function mainLine(me){

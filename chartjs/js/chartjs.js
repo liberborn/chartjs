@@ -65,7 +65,7 @@
 
             var g = '',
                 points = this.config.axisX.points,
-                step = Math.floor( (this.w + this.lineOffset) / (points.length));
+                step = (this.w + this.lineOffset + this.minOffset) / points.length;
 
             for (var i = 0; i < points.length; i++) {
                 var x = (i === points.length - 1) ? (this.w - this.lineOffset) : ((step * i) + this.offset);

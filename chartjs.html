@@ -3,70 +3,178 @@
 
 <head>
 
-    <title>Chart JS</title>
-    
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title>Chart JS</title>
 
-    <link type="text/css" rel="stylesheet" media="all" href="lib/bootstrap/css/bootstrap.min.css" />    
-    <link type="text/css" rel="stylesheet" media="all" href="chartjs/css/chartjs.css" />
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
-    <script type="text/javascript" src="chartjs/js/chartjs.js"></script>
+  <link type="text/css" rel="stylesheet" media="all" href="lib/bootstrap/css/bootstrap.min.css" />    
+  <link type="text/css" rel="stylesheet" media="all" href="chartjs/css/chartjs.css" />
 
-    <script type="text/javascript">
-    </script>
+  <script type="text/javascript" src="lib/jquery/jquery.min.js"></script>
+
+  <script type="text/javascript" src="chartjs/js/chartjs.sidebar.js"></script>
+  <script type="text/javascript" src="chartjs/js/chartjs.js"></script>
+
+  <script type="text/javascript">
+
+  $(document).ready(function(){
+
+    chartSidebar.init();
+
+    var chart1Config = {
+        
+        width : 550, //ширина графика
+        height : 430, //высота. Если их изменить то все отрисуется правильно.
+
+        middleLineColor: "rgb(133,205,250)",
+        
+        axisX: {
+            max: 50,
+            points: [15, 20, 25, 30, 35, 40, 45, 50],
+            min: 15
+        },
+
+        axisY: {
+            max:3,
+            min:0,
+            middle: 2.2,
+            points: [0, 1, 2, 3],
+            points2:[
+              {val:0, lbl:"<i class='tick first'></i>0"},
+              {val:0.6, lbl:"<i class='tick'></i>20"},
+              {val:1.2, lbl:"<i class='tick'></i>40"},
+              {val:1.8, lbl:"<i class='tick'></i>60"},
+              {val:2.4, lbl:"<i class='tick'></i>80"},
+              {val:3, lbl:"<i class='tick last'></i>100%"}
+            ]
+        },
+        data: {
+          color: "rgb(102,217,2)",
+          label: "Менеджмент", //пусть при наведении на точку появится подсказочка кому эта точка принадлежит
+          id: "someid",
+          points: [
+            {x: 18, y: 1.2,  percent:42}, 
+            {x: 28.4, y: 2, percent: 70},
+            {x: 40.4, y: 0.8, percent: 10}
+          ]
+        }
+    };
+
+    var chart2Config = {
+        
+        width : 550, //ширина графика
+        height : 430, //высота. Если их изменить то все отрисуется правильно.
+
+        middleLineColor: "rgb(133,205,250)",
+        
+        axisX: {
+            max: 50,
+            points: [15, 20, 25, 30, 35, 40, 45, 50],
+            min: 15
+        },
+
+        axisY: {
+            max:3,
+            min:0,
+            middle: 2.2,
+            points: [0, 1, 2, 3],
+            points2:[
+              {val:0, lbl:"<i class='tick first'></i>0"},
+              {val:0.6, lbl:"<i class='tick'></i>20"},
+              {val:1.2, lbl:"<i class='tick'></i>40"},
+              {val:1.8, lbl:"<i class='tick'></i>60"},
+              {val:2.4, lbl:"<i class='tick'></i>80"},
+              {val:3, lbl:"<i class='tick last'></i>100%"}
+            ]
+        },
+        data: {
+          color: "rgb(0,150,245)",
+          label: "Менеджер",
+          id: "someid2",
+          points: [ {x: 28, y: 2.2, percent: 15} ]
+        }
+    };
+
+    var chart3Config = {
+        
+        width : 750, //ширина графика
+        height : 630, //высота. Если их изменить то все отрисуется правильно.
+
+        middleLineColor: "rgb(133,205,250)",
+        
+        axisX: {
+            max: 50,
+            points: [15, 20, 25, 30, 35, 40, 45, 50],
+            min: 15
+        },
+
+        axisY: {
+            max:3,
+            min:0,
+            middle: 2.2,
+            points: [0, 1, 2, 3],
+            points2:[
+              {val:0, lbl:"<i class='tick first'></i>0"},
+              {val:0.6, lbl:"<i class='tick'></i>20"},
+              {val:1.2, lbl:"<i class='tick'></i>40"},
+              {val:1.8, lbl:"<i class='tick'></i>60"},
+              {val:2.4, lbl:"<i class='tick'></i>80"},
+              {val:3, lbl:"<i class='tick last'></i>100%"}
+            ]
+        },
+        data: {
+          color: "rgb(241,220,45)",
+          label: "Программист",
+          id: "someid3",
+          points: [
+            {x: 19 , y: 0.2, percent: 12}, 
+            {x: 24, y:0.6, percent: 15}, 
+            {x: 28, y:3, percent: 1}
+          ]
+        } 
+    };
+
+    var chart1  = new Chart("#chart1-container", chart1Config),
+        chart2 = new Chart("#chart2-container", chart2Config),
+        chart3 = new Chart("#chart3-container", chart3Config);
+
+    var debug = true;
+  });
+
+  </script>
 
 </head>
 
 <body>
 
-    <div class="row-fluid">
-        
-        <div class="span3 span-padding chart-sidebar">
-            <span class="comment">Оценен</span>
-            <ul>
-                <li><span class="active">Профессиональный рост</span><div class="arrow-right"></div></li>
-                <li><span>Соцпакет<span></li>
-                <li><span>Команда<span></li>
-                <li><span>Планы на полгода<span></li>
-                <li><span>Уровень зарплаты<span></li>
-                <li><span>Компания как бренд<span></li>
-                <li><span>Идеальный роботодатель<span></li>
-                <li><span>Рабочее место<span></li>
-            </ul>
-        </div>
-        <div class="span9">
+  <div class="row-fluid">
 
-            <div id="chart-page-container" class="chart-container">
-
-<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="722"
-  height="400">
-
-  <g class="highcharts-grid" zIndex="1">
-      <path fill="none" d="M 72 329.5 L 592 329.5" stroke="#C0C0C0"
-        stroke-width="1" zIndex="1" />
-      <path fill="none" d="M 72 238.5 L 592 238.5" stroke="#C0C0C0"
-        stroke-width="1" zIndex="1" />
-      <path fill="none" d="M 72 146.5 L 592 146.5" stroke="#C0C0C0"
-        stroke-width="1" zIndex="1" />
-      <path fill="none" d="M 72 55.5 L 592 55.5" stroke="#C0C0C0"
-        stroke-width="1" zIndex="1" />
-      <path fill="none" d="M 72 284.5 L 592 284.5" stroke="#C0C0C0"
-        stroke-width="1" zIndex="1" />
-      <path fill="none" stroke="#C0C0C0" stroke-width="1" zIndex="1"
-        d="M 72 192.5 L 592 192.5" />
-      <path fill="none" stroke="#C0C0C0" stroke-width="1" zIndex="1"
-        d="M 72 101.5 L 592 101.5" />
-      <path fill="none" d="M 72 375.5 L 592 375.5" stroke="#C0C0C0"
-        stroke-width="1" zIndex="1" />
-  </g>
-</svg>
-
-            </div>
-
-
-        </div>
-        
+    <div class="span3 span-padding chart-sidebar">
+      <span class="comment">Оценен</span>
+      <ul>
+        <li><span class="active" data-chart-container="0">Профессиональный рост</span><div class="arrow-right"></div></li>
+        <li><span data-chart-container="1">Соцпакет</span></li>
+        <li><span data-chart-container="2">Команда</span></li>
+        <li><span data-chart-container="3">Планы на полгода</span></li>
+        <li><span data-chart-container="4">Уровень зарплаты</span></li>
+        <li><span data-chart-container="5">Компания как бренд</span></li>
+        <li><span data-chart-container="6">Идеальный роботодатель</span></li>
+        <li><span data-chart-container="7">Рабочее место</span></li>
+      </ul>
     </div>
+    
+    <div class="span9">
+      <div id="chart1-container" class="chart-container active"></div>
+      <div id="chart2-container" class="chart-container"></div>
+      <div id="chart3-container" class="chart-container"></div>
+      <div class="chart-container"></div>
+      <div class="chart-container"></div>
+      <div class="chart-container"></div>
+      <div class="chart-container"></div>
+      <div class="chart-container"></div>
+    </div>
+
+  </div>
 
 </body>
 

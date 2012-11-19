@@ -162,7 +162,7 @@
                         y2 : y,
                         stroke : obj.color,
                         strokeW : '1',
-                        strokeDA : '4,4'
+                        strokeDA : '1,1'
                 });
 
             }
@@ -308,7 +308,7 @@
                         y2 : this.h - this.margin.bottom - this.padding.bottom,
                         stroke : '#C0C0C0',
                         strokeW : '1',
-                        strokeDA : '4,4'
+                        strokeDA : '3,3'
                 });
 
                 // text y
